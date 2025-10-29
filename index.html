@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Révision Vocabulaire Allemand-Français</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #fff);
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #00796b;
+    }
+    #timer {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    .question {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+    .option {
+      background: #e0f2f1;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .option:hover {
+      background: #b2dfdb;
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <h1>Révision Vocabulaire 🇩🇪🇫🇷</h1>
+  <div id="timer">⏱ Temps restant : <span id="time">15:00</span></div>
+  <div class="card">
+    <div class="question" id="question">Chargement...</div>
+    <div id="options"></div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const vocab = [
+      {"german":"die Wirtschaft","french":"l'économie"},
+      {"german":"die Industrie","french":"l'industrie"},
+      {"german":"der Handel","french":"le commerce"},
+      {"german":"die Dienstleistung","french":"la prestation de service"},
+      {"german":"die Schweiz","french":"la Suisse"},
+      {"german":"die Inflation","french":"l'inflation"},
+      {"german":"die Kaufkraft","french":"le pouvoir d'achat"},
+      {"german":"reich","french":"riche"},
+      {"german":"arm","french":"pauvre"},
+      {"german":"teilen","french":"partager"},
+      {"german":"die Vergangenheit","french":"le passé"},
+      {"german":"die Gegenwart","french":"le présent"},
+      {"german":"die Zukunft","french":"le futur"},
+      {"german":"der Beruf","french":"le métier"},
+      {"german":"die Forschung","french":"la recherche"},
+      {"german":"der Gewinn","french":"le bénéfice"},
+      {"german":"der Verlust","french":"la perte"},
+      {"german":"die Krise","french":"la crise"},
+      {"german":"die Erholung","french":"la reprise"},
+      {"german":"die Arbeitslosigkeit","french":"le chômage"}
+    ];
+
+    let timeLeft = 15 * 60;
+    const timerDisplay = document.getElementById("time");
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+
+    function startTimer() {
+      const interval = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          questionEl.textContent = "⏳ Temps écoulé !";
+          optionsEl.innerHTML = "";
+          return;
+        }
+        timeLeft--;
+        const min = Math.floor(timeLeft / 60);
+        const sec = timeLeft % 60;
+        timerDisplay.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function nextQuestion() {
+      resultEl.textContent = "";
+      const isGermanToFrench = Math.random() > 0.5;
+      const current = vocab[Math.floor(Math.random() * vocab.length)];
+      const correct = isGermanToFrench ? current.french : current.german;
+      const questionText = isGermanToFrench ? current.german : current.french;
+      questionEl.textContent = `Traduire : ${questionText}`;
+      
+      let choices = [correct];
+      while (choices.length < 4) {
+        const random = vocab[Math.floor(Math.random() * vocab.length)];
+        const option = isGermanToFrench ? random.french : random.german;
+        if (!choices.includes(option)) choices.push(option);
+      }
+      shuffle(choices);
+      optionsEl.innerHTML = "";
+      choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = choice;
+        btn.onclick = () => {
+          resultEl.textContent = choice === correct ? "✅ Correct !" : `❌ Faux. Réponse : ${correct}`;
+          setTimeout(nextQuestion, 1500);
+        };
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    startTimer();
+    nextQuestion();
+  </script>
+</body>
+</html>
