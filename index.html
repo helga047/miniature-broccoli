@@ -458,7 +458,7 @@
         btn.textContent = choice;
         btn.onclick = () => {
           resultEl.textContent = choice === correct ? "✅ Correct !" : `❌ Faux. Réponse : ${correct}`;
-          setTimeout(nextQuestion, 1500);
+          setTimeout(nextQuestion, 3000);
         };
         optionsEl.appendChild(btn);
       });
